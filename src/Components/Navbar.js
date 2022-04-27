@@ -6,7 +6,7 @@ const Navbar = () => {
             <h1>Data Visualization Bachelorarbeit</h1>
             <div className="links">
                 <Link to="/">Home</Link>
-                <Link to="/news">News</Link>
+                <Link to="/test">Test</Link>
             </div>
         </nav>
       );

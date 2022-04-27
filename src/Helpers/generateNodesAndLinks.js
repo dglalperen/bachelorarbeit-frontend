@@ -58,7 +58,7 @@ function makeLocNodeAndLink(data,nodes,links){
     if(data.loc){
         data.loc.forEach((o) =>{
           if(o.sameAs){
-              // organization node
+              // location node
               nodes.push({
                   id: o.sameAs,
                   name: o.name,
