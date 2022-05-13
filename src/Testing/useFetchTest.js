@@ -7,6 +7,7 @@ const useFetchTest = (url,queryWithBackTicks,dataUnwrap) => {
     const QUERY = queryWithBackTicks
 
     useEffect(() => {
+        setIsLoading(true)
         fetch(url, {
             method: "POST",
             headers: {"Content-Type": "application/json"},

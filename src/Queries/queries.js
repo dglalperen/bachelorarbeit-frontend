@@ -1,57 +1,24 @@
 
 const companyByQid = `query companyByQid {
-    companyByQid(qid: "Q154950") {
+  companyByQid(qid: "Q154950") {
+    type
+    qid
+    label
+    description
+    image
+    country {
       qid
-      type
       label
-      description
-      aliases
-      legal_form
-      logo
-      image
-      industry {
-        qid
-        label
-      }
-      inception
-      website
-      linkedin
-      twitter
-      facebook
-      instagram
-      country {
-        qid
-        label
-      }
-      headquarters_location {
-        qid
-        label
-      }
-      ceo {
-        qid
-        label
-    start_time
-    end_time
-      }
-      employees {
-        value
-        point_in_time
-      }
-      total_revenue {
-        value
-    unit
-        point_in_time
-      }
-      net_profit {
-        value
-    unit
-        point_in_time
-      }
-      subsidiary {
-        qid
-        label
-      }
-  }
+    }
+    ceo {
+      qid
+      label
+    }
+    subsidiary {
+      qid
+      label
+    }
+}
 }`;
 
 const locationByQid = `query LocationByQid {

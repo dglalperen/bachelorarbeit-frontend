@@ -16,7 +16,7 @@ const transformData = (data) => {
               image: a.image,
               name: a.headline,
               __typename: a.__typename,
-              color: "grey",
+              color: "purple",
               sizeInPx: 6,
           })
 

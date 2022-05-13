@@ -1,10 +1,4 @@
-function randomColor(r,g,b){
-    return 'rgb('+random(r)+','+random(g)+','+random(b)+')';    
-   }
-
-function random(number){
-    return Math.floor(Math.random()*number);;
-    }   
+import { randomColor } from "./generateColor"
 
 function makeOrgNodeAndLink(data,nodes,links){
     if(data.org){

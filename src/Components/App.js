@@ -3,7 +3,7 @@ import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import NotFound from './NotFound.js';
 import News from './News.js';
 import NodeGraph from './NodeGraph.js';
-import Test from './Test.js';
+import Test from '../Testing/Test.js';
 
 function App() {
   return (
