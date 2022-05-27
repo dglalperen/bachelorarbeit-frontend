@@ -3,14 +3,14 @@
 /* base styles */
 * {
   margin: 0;
+  padding: 0;
   font-family: "Quicksand";
-  color: white;
-  background-color: #394053;
+  background-color: #21242e;
 }
 .navbar {
   padding: 20px;
   display: flex;
-  align-items: center;
+  justify-content: center;
   max-width: 600px;
   margin: 0 auto;
   border-bottom: 1px solid #f2f2f2;
@@ -18,33 +18,23 @@
 .navbar h1 {
   color: #68c3d4;
 }
-.navbar .links {
-  margin-left: auto;
-}
-.navbar a {
-  margin-left: 16px;
-  text-decoration: none;
-  padding: 6px;
-}
-.navbar a:hover {
-  color: #68c3d4;
-}
+
 .content {
   max-width: 600px;
-  margin: 40px auto 0px auto;
+  margin: 0px auto 0px auto;
   padding: 20px;
 }
 
-/* news styling */
+/* search styling */
 
-.news {
+.search {
   max-width: 400px;
   margin: 0 auto;
   text-align: center;
   background-color: white;
 }
 
-.news h2 {
+.search h2 {
   font-size: 25px;
   color: #68c3d4;
   padding: 10px;
@@ -55,62 +45,40 @@
   border-radius: 5px;
 }
 
-#per{
-  color: green;
-  background-color: white;
-}
-
-#loc{
-  color: blue;
-  background-color: white;
-}
-
-#org{
-  color: red;
-  background-color: white;
-}
-
-#news{
-  color: gray;
-  background-color: white;
-}
-
-.news form label{
+.search form label{
   text-align: center;
   font-weight: 500;
   font-size: 20px;
   display: block;
-  margin-bottom: 20px;
 }
 
-.news form input{
+.search form input{
   border-radius: 10px;
   height: 40px;
+  text-align: center;
   font-weight: bold;
   background-color: rgb(242, 235, 235);
-  margin-bottom: 20px;
   color: black;
+  margin: 0 0 10px 0;
 }
 
-.news form button{
+.search form button{
   height: 40px;
   width: 90px;
 }
 
-.news form button:hover{
+.search form button:hover{
   background-color: #66aac3;
   font-weight: bolder;
 }
 
-.news input, .news select {
+.search input, .search select {
   width: 100%;
   padding: 6px 10px;
-  margin: 10px 0;
-  border: 1px solid #ddd;
   box-sizing: border-box;
   display: block;
 }
-.news button {
+.search button {
   background: #68c3d4;
   color: #fff;
   border: 0;
@@ -125,6 +93,6 @@
   border: 4px solid #fdf7fa;
   border-radius: 10px;
   width: 1000px;
-  margin: 30px auto;
+  margin: 15px 0 0 0;
   right: 200px;
 }

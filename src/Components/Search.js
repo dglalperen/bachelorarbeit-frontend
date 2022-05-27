@@ -1,7 +1,8 @@
 import { useState } from "react";
 
-const News = () => {
+//TODO: When searching a per, loc or org, it should show a node if existing
 
+const Search = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const search = { searchText };
@@ -9,19 +10,12 @@ const News = () => {
   const [searchText, setSearchText] = useState("");
 
   return (
-    <div className="news">
-
-      <div className="categories">
-        <h2><span id="per">Person </span><span id="loc">Location </span><span id="org">Organization </span><span id="news">News</span></h2>
-      </div>
-
+    <div className="search">
       <form onSubmit={handleSubmit}>
-        <label>
-          Search for Person, Organization or Country
-        </label>
         <input
           type="text"
           value={searchText}
+          placeholder="Search for some Person, Organization or Country"
           onChange={(e) => setSearchText(e.target.value)}
         />
         <button>Search</button>
@@ -30,4 +24,4 @@ const News = () => {
   );
 };
 
-export default News;
+export default Search;

@@ -1,10 +1,31 @@
 import { useState, useEffect } from "react";
 
-const useFetchTest = (url, queryWithBackTicks, dataUnwrap) => {
+const useFetchPerson = (url, qid) => {
   const [someData, setSomeData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const QUERY = queryWithBackTicks;
+  const QUERY = `query PersonByQid {
+    personByQid(qid: "${qid}") {
+      qid
+      type
+      label
+      description
+      date_of_birth
+      date_of_death
+      place_of_birth {
+        qid
+        label
+      }
+    country_of_citizenship {
+        qid
+        label
+      }
+      employer {
+        qid
+        label
+      }
+  }
+  }`;
 
   useEffect(() => {
     setIsLoading(true);
@@ -15,7 +36,7 @@ const useFetchTest = (url, queryWithBackTicks, dataUnwrap) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        setSomeData(data["data"][dataUnwrap]);
+        setSomeData(data["data"]["personByQid"]);
         setIsLoading(false);
         setError(null);
       })
@@ -28,4 +49,4 @@ const useFetchTest = (url, queryWithBackTicks, dataUnwrap) => {
   return { someData, isLoading, error };
 };
 
-export default useFetchTest;
+export default useFetchPerson;
