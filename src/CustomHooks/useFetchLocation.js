@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 const useFetchLocation = (url, qid) => {
-  const [someData, setSomeData] = useState([]);
+  const [data, setSomeData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const QUERY = `query LocationByQid {
@@ -37,7 +37,7 @@ const useFetchLocation = (url, qid) => {
       });
   }, [url]);
 
-  return { someData, isLoading, error };
+  return { data, isLoading, error };
 };
 
 export default useFetchLocation;

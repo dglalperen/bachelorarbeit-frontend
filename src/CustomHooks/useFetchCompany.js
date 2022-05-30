@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 const useFetchCompany = (url, qid) => {
-  const [someData, setSomeData] = useState([]);
+  const [data, setSomeData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const QUERY = `query companyByQid {
@@ -26,8 +26,6 @@ const useFetchCompany = (url, qid) => {
   }
   }`;
 
-  console.log(QUERY);
-
   useEffect(() => {
     setIsLoading(true);
     fetch(url, {
@@ -47,7 +45,7 @@ const useFetchCompany = (url, qid) => {
       });
   }, [url]);
 
-  return { someData, isLoading, error };
+  return { data, isLoading, error };
 };
 
 export default useFetchCompany;
