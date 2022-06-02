@@ -2,7 +2,7 @@ import { useState } from "react";
 
 //TODO: When searching a per, loc or org, it should show a node if existing
 
-const Search = () => {
+const Search = ({ text, changeSearchText }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const search = { searchText };
@@ -16,9 +16,18 @@ const Search = () => {
           type="text"
           value={searchText}
           placeholder="Search for some Person, Organization or Country"
-          onChange={(e) => setSearchText(e.target.value)}
+          onChange={(e) => {
+            setSearchText(e.target.value);
+            changeSearchText(e.target.value);
+          }}
         />
-        <button>Search</button>
+        <button
+          onClick={() => {
+            console.log(searchText);
+          }}
+        >
+          Search
+        </button>
       </form>
     </div>
   );

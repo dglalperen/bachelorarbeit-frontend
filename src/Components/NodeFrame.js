@@ -27,17 +27,6 @@ const NodeFrame = () => {
   }, [companyData]);
 
   //! Fetching Person Data -- Child Nodes
-  const [ceos, setCeos] = useState([]);
-
-  useEffect(() => {
-    console.log("ceos");
-    console.log(ceos);
-  }, [ceos]);
-
-  useEffect(() => {
-    console.log("nodes");
-    console.log(nodes);
-  }, [nodes]);
 
   const handleNodeClick = (node, event) => {
     // Append new nodes to nodes State
@@ -88,35 +77,29 @@ const NodeFrame = () => {
           })
             .then((response) => response.json())
             .then((data) => {
-              const unfoldedData = data["data"]["personByQid"];
-              if (unfoldedData) {
-                setCeos((ceos) => [...ceos, unfoldedData]);
+              const ceoData = data["data"]["personByQid"];
+              if (ceoData) {
+                currentNodes.push({
+                  id: ceoData.qid,
+                  name: ceoData.label,
+                  __typename: "ceo",
+                  color: "purple",
+                  sizeInPx: 5,
+                });
+
+                currentLinks.push({ source: node.id, target: ceoData.qid });
+
+                const newNodes = currentNodes.concat(nodes.nodes);
+                const newLinks = currentLinks.concat(nodes.links);
+
+                setClickCounter(1);
+                setNodes({ nodes: newNodes, links: newLinks });
               }
             })
             .catch((err) => {
               console.log(err);
             });
         }
-
-        if (ceos) {
-          console.log("ceos werden gepusht");
-          ceos.forEach((ceo) => {
-            currentNodes.push({
-              id: ceo.qid,
-              name: ceo.label,
-              __typename: "ceo",
-              color: "purple",
-              sizeInPx: 5,
-            });
-
-            currentLinks.push({ source: node.id, target: ceo.qid });
-          });
-        }
-        const newNodes = currentNodes.concat(nodes.nodes);
-        const newLinks = currentLinks.concat(nodes.links);
-
-        setClickCounter(1);
-        setNodes({ nodes: newNodes, links: newLinks });
       }
     }
   };
@@ -124,7 +107,6 @@ const NodeFrame = () => {
   return (
     <div>
       {isLoadingCompanyData && !errorCompanyData && <p>Loading...</p>}
-
       {!isLoadingCompanyData && (
         <ForceGraph2D
           height={800}
