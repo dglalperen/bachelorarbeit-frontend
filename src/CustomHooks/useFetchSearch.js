@@ -26,6 +26,7 @@ const useFetchSearch = (url, entityType, entity) => {
 
   useEffect(() => {
     setIsLoading(true);
+
     fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -41,7 +42,7 @@ const useFetchSearch = (url, entityType, entity) => {
         setIsLoading(false);
         setError(err.message);
       });
-  }, [url]);
+  }, [entity]);
 
   return { data, isLoading, error };
 };

@@ -25,8 +25,6 @@
   padding: 20px;
 }
 
-/* search styling */
-
 .search {
   max-width: 400px;
   margin: 0 auto;
@@ -45,40 +43,34 @@
   border-radius: 5px;
 }
 
-.search form label{
-  text-align: center;
-  font-weight: 500;
-  font-size: 20px;
-  display: block;
+.radio{
+  margin: 1em;
 }
 
-.search form input{
-  border-radius: 10px;
-  height: 40px;
+
+.radio label{
+  color: white;
+  margin: 0 20px;
+  width: 1em;
+  height: 1em;
+}
+
+.radio input{
+  width: 1em;
+  height: 1em;
+}
+
+.textInput{
+  border-radius: 8px;
   text-align: center;
   font-weight: bold;
-  background-color: rgb(242, 235, 235);
   color: black;
-  margin: 0 0 10px 0;
+  background-color: white;
+  width: 100%;
+  padding: 6px 10px;
 }
 
 .search form button{
-  height: 40px;
-  width: 90px;
-}
-
-.search form button:hover{
-  background-color: #66aac3;
-  font-weight: bolder;
-}
-
-.search input, .search select {
-  width: 100%;
-  padding: 6px 10px;
-  box-sizing: border-box;
-  display: block;
-}
-.search button {
   background: #68c3d4;
   color: #fff;
   border: 0;
@@ -86,6 +78,13 @@
   border-radius: 8px;
   cursor: pointer;
 }
+
+.search form button:hover{
+  background-color: #66aac3;
+  font-weight: bolder;
+}
+
+
 
 /* Node Box styling*/
 
