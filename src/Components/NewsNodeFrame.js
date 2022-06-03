@@ -16,18 +16,12 @@ const NewsNodeFrame = () => {
   });
   const [searchText, setSearchText] = useState("");
 
-  useEffect(() => {
-    console.log(console.clear());
-    console.log(searchText);
-  }, [searchText]);
-
-  const changeSearchText = (text) => {
-    setSearchText(text);
-  };
-
   return (
     <div>
-      <Search data={{ text: searchText, changeSearchText: changeSearchText }} />
+      <Search
+        searchText={searchText}
+        changeSearchText={(text) => setSearchText(text)}
+      />
       {isLoadingNewsData && !errorNewsData && <p>Loading...</p>}
       {!isLoadingNewsData && (
         <ForceGraph2D

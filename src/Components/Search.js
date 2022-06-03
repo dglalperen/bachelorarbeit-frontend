@@ -2,13 +2,11 @@ import { useState } from "react";
 
 //TODO: When searching a per, loc or org, it should show a node if existing
 
-const Search = ({ text, changeSearchText }) => {
+const Search = ({ changeSearchText, searchText }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
-    const search = { searchText };
+    console.log(searchText);
   };
-  const [searchText, setSearchText] = useState("");
-
   return (
     <div className="search">
       <form onSubmit={handleSubmit}>
@@ -17,13 +15,12 @@ const Search = ({ text, changeSearchText }) => {
           value={searchText}
           placeholder="Search for some Person, Organization or Country"
           onChange={(e) => {
-            setSearchText(e.target.value);
             changeSearchText(e.target.value);
           }}
         />
         <button
-          onClick={() => {
-            console.log(searchText);
+          onClick={(e) => {
+            handleSubmit(e);
           }}
         >
           Search
