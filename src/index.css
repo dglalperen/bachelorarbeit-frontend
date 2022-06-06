@@ -19,6 +19,10 @@
   color: #68c3d4;
 }
 
+.refresh-btn:hover{
+  cursor: pointer;
+}
+
 .content {
   max-width: 600px;
   margin: 0px auto 0px auto;
@@ -29,7 +33,6 @@
   max-width: 400px;
   margin: 0 auto;
   text-align: center;
-  background-color: white;
 }
 
 .search h2 {
@@ -46,6 +49,7 @@
 .radio{
   margin: 1em;
 }
+
 
 
 .radio label{

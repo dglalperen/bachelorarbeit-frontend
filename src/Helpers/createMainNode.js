@@ -5,7 +5,7 @@ const createMainNode = (data, setNodes) => {
         {
           id: data.qid,
           name: data.label,
-          __typename: data.type,
+          __typename: data.__typename,
           color: "blue",
           sizeInPx: 6,
         },

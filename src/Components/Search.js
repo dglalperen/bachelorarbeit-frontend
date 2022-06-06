@@ -28,6 +28,7 @@ const Search = ({
         <div className="radio">
           <label htmlFor="org">Organization</label>
           <input
+            name="entity-type"
             checked={isSelected("org")}
             onChange={(e) => handleRadioClick(e)}
             type="radio"
@@ -37,6 +38,7 @@ const Search = ({
         <div className="radio">
           <label htmlFor="loc">Location</label>
           <input
+            name="entity-type"
             checked={isSelected("loc")}
             onChange={(e) => handleRadioClick(e)}
             type="radio"
@@ -46,6 +48,7 @@ const Search = ({
         <div className="radio">
           <label htmlFor="per">Person</label>
           <input
+            name="entity-type"
             checked={isSelected("per")}
             onChange={(e) => handleRadioClick(e)}
             type="radio"

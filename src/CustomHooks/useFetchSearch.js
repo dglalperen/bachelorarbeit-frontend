@@ -6,6 +6,7 @@ const useFetchSearch = (url, entityType, entity) => {
   const [error, setError] = useState(null);
   const QUERY = `query {
     newsSearch(limit: 200, entity: "${entityType}", keywords: "${entity}"){
+      __typename
       id
       headline
       org{
@@ -42,7 +43,7 @@ const useFetchSearch = (url, entityType, entity) => {
         setIsLoading(false);
         setError(err.message);
       });
-  }, [entity]);
+  }, [entity, entityType]);
 
   return { data, isLoading, error };
 };
