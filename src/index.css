@@ -50,7 +50,20 @@
   margin: 1em;
 }
 
+#radioPer{
+  color: red;
+  font-weight: bold;
+}
 
+#radioLoc{
+  color: blue;
+  font-weight: bold;
+}
+
+#radioOrg{
+  color: green;
+  font-weight: bold;
+}
 
 .radio label{
   color: white;

@@ -5,7 +5,7 @@ const useFetchSearch = (url, entityType, entity) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const QUERY = `query {
-    newsSearch(limit: 200, entity: "${entityType}", keywords: "${entity}"){
+    newsSearch(limit: 300, entity: "${entityType}", keywords: "${entity}"){
       __typename
       id
       headline
@@ -25,9 +25,8 @@ const useFetchSearch = (url, entityType, entity) => {
     }
   }`;
 
-  useEffect(() => {
+  const getData = () => {
     setIsLoading(true);
-
     fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -36,6 +35,7 @@ const useFetchSearch = (url, entityType, entity) => {
       .then((response) => response.json())
       .then((data) => {
         setSomeData(data["data"]["newsSearch"]);
+        console.log("api is called");
         setIsLoading(false);
         setError(null);
       })
@@ -43,6 +43,14 @@ const useFetchSearch = (url, entityType, entity) => {
         setIsLoading(false);
         setError(err.message);
       });
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      getData();
+    }, 500);
+
+    return () => clearTimeout(timer);
   }, [entity, entityType]);
 
   return { data, isLoading, error };

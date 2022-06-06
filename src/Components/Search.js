@@ -26,7 +26,9 @@ const Search = ({
           }}
         />
         <div className="radio">
-          <label htmlFor="org">Organization</label>
+          <label htmlFor="org" id="radioOrg">
+            Organization
+          </label>
           <input
             name="entity-type"
             checked={isSelected("org")}
@@ -36,7 +38,9 @@ const Search = ({
           />
         </div>
         <div className="radio">
-          <label htmlFor="loc">Location</label>
+          <label htmlFor="loc" id="radioLoc">
+            Location
+          </label>
           <input
             name="entity-type"
             checked={isSelected("loc")}
@@ -46,7 +50,9 @@ const Search = ({
           />
         </div>
         <div className="radio">
-          <label htmlFor="per">Person</label>
+          <label htmlFor="per" id="radioPer">
+            Person
+          </label>
           <input
             name="entity-type"
             checked={isSelected("per")}

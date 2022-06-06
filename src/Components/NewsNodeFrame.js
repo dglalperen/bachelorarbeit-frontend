@@ -2,7 +2,6 @@ import ForceGraph2D from "react-force-graph-2d";
 import { useEffect, useState } from "react";
 import useFetchSearch from "../CustomHooks/useFetchSearch";
 import Search from "./Search";
-import createMainNode from "../Helpers/createMainNode";
 
 const NewsNodeFrame = () => {
   const [searchText, setSearchText] = useState("");
@@ -34,10 +33,6 @@ const NewsNodeFrame = () => {
     links: [],
   });
 
-  const setStateCB = (newState) => {
-    setNodes(newState);
-  };
-
   useEffect(() => {
     if (newsData) {
       const nodes = [];
@@ -48,7 +43,7 @@ const NewsNodeFrame = () => {
           id: news.id,
           name: news.headline,
           __typename: news.__typename,
-          color: "purple",
+          color: "black",
           sizeInPx: 6,
         });
 
@@ -75,13 +70,20 @@ const NewsNodeFrame = () => {
 
     const node = nodeArr[0];
 
-    if (node.org) {
+    /* if (node.__typename === "loc") {
       console.log(node);
+      setSelectedEntityType("loc");
+    } */
+
+    console.log("node");
+    console.log(nodeArr[0]);
+
+    if (node.__typename === "News") {
       nodes.push({
         id: node.id,
         name: node.headline,
         __typename: node.__typename,
-        color: "purple",
+        color: "black",
         sizeInPx: 6,
       });
 
@@ -93,13 +95,55 @@ const NewsNodeFrame = () => {
             id: orgNode.sameAs,
             name: orgNode.name,
             __typename: "org",
-            color: "orange",
+            color: "green",
             sizeInPx: 5,
           });
 
           links.push({
             source: node.id,
             target: orgNode.sameAs,
+          });
+
+          //setNodes({ nodes: nodes, links: links });
+        }
+      });
+
+      node.per.forEach((perNode) => {
+        //! Checking if per has a Qid
+        //! If not, it wont be considered and rendered
+        if (perNode.sameAs) {
+          nodes.push({
+            id: perNode.sameAs,
+            name: perNode.name,
+            __typename: "per",
+            color: "red",
+            sizeInPx: 5,
+          });
+
+          links.push({
+            source: node.id,
+            target: perNode.sameAs,
+          });
+
+          //setNodes({ nodes: nodes, links: links });
+        }
+      });
+
+      node.loc.forEach((locNode) => {
+        //! Checking if loc has a Qid
+        //! If not, it wont be considered and rendered
+        if (locNode.sameAs) {
+          nodes.push({
+            id: locNode.sameAs,
+            name: locNode.name,
+            __typename: "loc",
+            color: "blue",
+            sizeInPx: 5,
+          });
+
+          links.push({
+            source: node.id,
+            target: locNode.sameAs,
           });
 
           setNodes({ nodes: nodes, links: links });
@@ -126,7 +170,7 @@ const NewsNodeFrame = () => {
           nodeColor={"color"}
           nodeLabel={"name"}
           nodeVal={"sizeInPx"}
-          linkColor={"black"}
+          linkColor={"red"}
           linkWidth={4}
           linkDirectionalParticles={5}
           graphData={nodes}
