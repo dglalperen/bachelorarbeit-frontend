@@ -1,7 +1,9 @@
 import ForceGraph2D from "react-force-graph-2d";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import useFetchSearch from "../CustomHooks/useFetchSearch";
 import Search from "./Search";
+import { pushNewsNode, pushNodes } from "../Helpers/nodeAdders";
+import { pushLinks } from "../Helpers/linkAdders";
 
 const NewsNodeFrame = () => {
   const [searchText, setSearchText] = useState("");
@@ -39,13 +41,15 @@ const NewsNodeFrame = () => {
       const links = [];
       const allIDs = [];
       newsData.forEach((news) => {
-        nodes.push({
+        /* nodes.push({
           id: news.id,
           name: news.headline,
           __typename: news.__typename,
           color: "black",
           sizeInPx: 6,
-        });
+        }); */
+
+        pushNewsNode(nodes, news);
 
         allIDs.push(news.id);
 
@@ -64,93 +68,44 @@ const NewsNodeFrame = () => {
     console.log(nodes);
   }, [nodes]);
 
-  const focusHandler = (nodeArr) => {
-    const nodes = [];
-    const links = [];
+  const handleClick = useCallback(
+    (nodeArr) => {
+      const nodes = [];
+      const links = [];
 
-    const node = nodeArr[0];
+      const node = nodeArr[0];
 
-    /* if (node.__typename === "loc") {
-      console.log(node);
-      setSelectedEntityType("loc");
-    } */
+      if (node.__typename === "News") {
+        console.log("clicked");
+        pushNewsNode(nodes, node);
 
-    console.log("node");
-    console.log(nodeArr[0]);
+        node.org.forEach((orgNode) => {
+          if (orgNode.sameAs) {
+            pushNodes(nodes, orgNode, "org", "green");
+            pushLinks(links, node, orgNode);
+          }
+        });
 
-    if (node.__typename === "News") {
-      nodes.push({
-        id: node.id,
-        name: node.headline,
-        __typename: node.__typename,
-        color: "black",
-        sizeInPx: 6,
-      });
+        node.per.forEach((perNode) => {
+          if (perNode.sameAs) {
+            pushNodes(nodes, perNode, "per", "red");
+            pushLinks(links, node, perNode);
+          }
+        });
 
-      node.org.forEach((orgNode) => {
-        //! Checking if org has a Qid
-        //! If not, it wont be considered and rendered
-        if (orgNode.sameAs) {
-          nodes.push({
-            id: orgNode.sameAs,
-            name: orgNode.name,
-            __typename: "org",
-            color: "green",
-            sizeInPx: 5,
-          });
-
-          links.push({
-            source: node.id,
-            target: orgNode.sameAs,
-          });
-
-          //setNodes({ nodes: nodes, links: links });
-        }
-      });
-
-      node.per.forEach((perNode) => {
-        //! Checking if per has a Qid
-        //! If not, it wont be considered and rendered
-        if (perNode.sameAs) {
-          nodes.push({
-            id: perNode.sameAs,
-            name: perNode.name,
-            __typename: "per",
-            color: "red",
-            sizeInPx: 5,
-          });
-
-          links.push({
-            source: node.id,
-            target: perNode.sameAs,
-          });
-
-          //setNodes({ nodes: nodes, links: links });
-        }
-      });
-
-      node.loc.forEach((locNode) => {
-        //! Checking if loc has a Qid
-        //! If not, it wont be considered and rendered
-        if (locNode.sameAs) {
-          nodes.push({
-            id: locNode.sameAs,
-            name: locNode.name,
-            __typename: "loc",
-            color: "blue",
-            sizeInPx: 5,
-          });
-
-          links.push({
-            source: node.id,
-            target: locNode.sameAs,
-          });
-
-          setNodes({ nodes: nodes, links: links });
-        }
-      });
-    }
-  };
+        node.loc.forEach((locNode) => {
+          function pushAndSetNodes(cb) {
+            pushNodes(nodes, locNode, "loc", "blue");
+            pushLinks(links, node, locNode);
+          }
+          if (locNode.sameAs) {
+            pushAndSetNodes(() => setNodes({ nodes: nodes, links: links }));
+          }
+        });
+      }
+    },
+    [nodes]
+  );
 
   return (
     <div>
@@ -170,12 +125,10 @@ const NewsNodeFrame = () => {
           nodeColor={"color"}
           nodeLabel={"name"}
           nodeVal={"sizeInPx"}
-          linkColor={"red"}
-          linkWidth={4}
           linkDirectionalParticles={5}
           graphData={nodes}
           onNodeClick={(node, event) =>
-            focusHandler(newsData.filter((news) => news.id === node.id))
+            handleClick(newsData.filter((news) => news.id === node.id))
           }
         />
       )}

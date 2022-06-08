@@ -62,13 +62,14 @@ const Search = ({
           />
         </div>
 
-        <button
+        {/* <button
+          disabled
           onClick={(e) => {
             handleSubmit(e);
           }}
         >
           Search
-        </button>
+        </button> */}
       </form>
     </div>
   );
