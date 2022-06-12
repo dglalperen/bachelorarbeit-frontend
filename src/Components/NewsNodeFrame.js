@@ -76,7 +76,8 @@ const NewsNodeFrame = () => {
       const node = nodeArr[0];
 
       if (node.__typename === "News") {
-        console.log("clicked");
+        console.log("Node Array Before: ");
+        console.log(nodes);
         pushNewsNode(nodes, node);
 
         node.org.forEach((orgNode) => {
@@ -94,13 +95,11 @@ const NewsNodeFrame = () => {
         });
 
         node.loc.forEach((locNode) => {
-          function pushAndSetNodes(cb) {
+          if (locNode.sameAs) {
             pushNodes(nodes, locNode, "loc", "blue");
             pushLinks(links, node, locNode);
           }
-          if (locNode.sameAs) {
-            pushAndSetNodes(() => setNodes({ nodes: nodes, links: links }));
-          }
+          setNodes(() => setNodes({ nodes: nodes, links: links }));
         });
       }
     },
