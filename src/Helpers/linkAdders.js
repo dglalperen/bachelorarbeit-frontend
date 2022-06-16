@@ -1,8 +1,17 @@
 function pushLinks(arrToPushTo, source, target) {
   arrToPushTo.push({
-    source: source.id,
-    target: target.sameAs,
+    source: source?.id,
+    target: target?.sameAs,
   });
 }
 
-export { pushLinks };
+function pushEntityLinks(arrToPushTo, source, target) {
+  if (source && target) {
+    arrToPushTo.push({
+      source: source?.id,
+      target: target?.qid,
+    });
+  }
+}
+
+export { pushLinks, pushEntityLinks };

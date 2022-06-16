@@ -7,6 +7,12 @@
   font-family: "Quicksand";
   background-color: #21242e;
 }
+
+.App{
+  text-align: center;
+  justify-content: center;
+}
+
 .navbar {
   padding: 20px;
   display: flex;
@@ -23,16 +29,11 @@
   cursor: pointer;
 }
 
-.content {
-  max-width: 600px;
-  margin: 0px auto 0px auto;
-  padding: 20px;
-}
-
 .search {
   max-width: 400px;
   margin: 0 auto;
   text-align: center;
+  padding-top: 20px;
 }
 
 .search h2 {
@@ -106,9 +107,7 @@
 /* Node Box styling*/
 
 .force-graph-container{
-  border: 4px solid #fdf7fa;
-  border-radius: 10px;
-  width: 1000px;
-  margin: 15px 0 0 0;
-  right: 200px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 1700px;
 }

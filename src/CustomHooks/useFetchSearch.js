@@ -5,7 +5,7 @@ const useFetchSearch = (url, entityType, entity) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const QUERY = `query {
-    newsSearch(limit: 300, entity: "${entityType}", keywords: "${entity}"){
+    newsSearch(limit: 100, entity: "${entityType}", keywords: "${entity}"){
       __typename
       id
       headline
@@ -53,7 +53,7 @@ const useFetchSearch = (url, entityType, entity) => {
     return () => clearTimeout(timer);
   }, [entity, entityType]);
 
-  return { data, isLoading, error };
+  return { data, isLoading, error, setIsLoading };
 };
 
 export default useFetchSearch;

@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 //TODO: When searching a per, loc or org, it should show a node if existing
 
 const Search = ({
@@ -61,15 +59,6 @@ const Search = ({
             value="per"
           />
         </div>
-
-        {/* <button
-          disabled
-          onClick={(e) => {
-            handleSubmit(e);
-          }}
-        >
-          Search
-        </button> */}
       </form>
     </div>
   );
