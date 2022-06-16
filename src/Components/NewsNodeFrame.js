@@ -18,6 +18,7 @@ const NewsNodeFrame = () => {
   const [currentEntityType, setCurrentEntityType] = useState(null);
   const [currentEntityQid, setCurrentEntityQid] = useState(null);
   const [currentNode, setCurrentNode] = useState(null);
+  const [sliderValue, setSliderValue] = useState(0.4);
 
   const isSelected = (value) => {
     if (selectedEntityType === value) {
@@ -27,6 +28,11 @@ const NewsNodeFrame = () => {
 
   const handleRadioClick = (e) => {
     setSelectedEntityType(e.target.value);
+    console.log(e.target.value);
+  };
+
+  const handleSlider = (e) => {
+    setSliderValue(e.target.value);
     console.log(e.target.value);
   };
 
@@ -70,7 +76,7 @@ const NewsNodeFrame = () => {
             let jacLoc = getJaccardIndexOf(news.loc, comparisonNews.loc);
             let jaccardIndex = (jacOrg + jacPer + jacLoc) / 3;
 
-            if (jaccardIndex >= 0.4) {
+            if (jaccardIndex >= sliderValue) {
               links.push({
                 source: news.id,
                 target: comparisonNews.id,
@@ -81,7 +87,7 @@ const NewsNodeFrame = () => {
       });
       setNodes({ nodes: nodes, links: links });
     }
-  }, [newsData]);
+  }, [newsData, sliderValue]);
 
   useEffect(() => {
     console.clear();
@@ -220,6 +226,8 @@ const NewsNodeFrame = () => {
         isSelected={isSelected}
         selectedEntityType={selectedEntityType}
         handleRadioClick={handleRadioClick}
+        handleSlider={handleSlider}
+        sliderValue={sliderValue}
       />
       {isLoadingNewsData && !errorNewsData && <p>Loading...</p>}
       {!isLoadingNewsData && (

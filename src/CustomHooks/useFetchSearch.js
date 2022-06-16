@@ -5,7 +5,7 @@ const useFetchSearch = (url, entityType, entity) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const QUERY = `query {
-    newsSearch(limit: 100, entity: "${entityType}", keywords: "${entity}"){
+    newsSearch(limit: 300, entity: "${entityType}", keywords: "${entity}"){
       __typename
       id
       headline

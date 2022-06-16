@@ -3,9 +3,10 @@
 const Search = ({
   changeSearchText,
   searchText,
-  selectedEntityType,
   handleRadioClick,
   isSelected,
+  handleSlider,
+  sliderValue,
 }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -57,6 +58,21 @@ const Search = ({
             onChange={(e) => handleRadioClick(e)}
             type="radio"
             value="per"
+          />
+        </div>
+        <div className="jaccardSlider">
+          <label htmlFor="jaccardSlider">
+            Jaccard Threshold: {sliderValue}
+          </label>
+          <input
+            type="range"
+            name="jaccardSlider"
+            min={0.0}
+            max={1.0}
+            step={0.1}
+            id="jaccardSlider"
+            value={sliderValue}
+            onChange={(e) => handleSlider(e)}
           />
         </div>
       </form>
