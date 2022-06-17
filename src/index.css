@@ -47,6 +47,12 @@
   border-radius: 5px;
 }
 
+form{
+  border-bottom: 2px solid white;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+}
+
 .radio{
   margin: 1em;
 }
@@ -105,9 +111,7 @@
 .jaccardSlider{
   color: white;
   font-weight: bold;
-  margin-bottom: 20px;
-  padding-bottom: 15px;
-  border-bottom: 2px solid white;
+  padding-bottom: 10px;
 }
 
 .jaccardSlider label {
@@ -118,6 +122,8 @@
   color: white;
   font-size: xx-large;
 }
+
+
 
 /* Node Box styling*/
 

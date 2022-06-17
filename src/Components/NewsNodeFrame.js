@@ -1,50 +1,41 @@
 import ForceGraph2D from "react-force-graph-2d";
-import { useCallback, useEffect, useRef, useState } from "react";
-import useFetchSearch from "../CustomHooks/useFetchSearch";
 import Search from "./Search";
+import { useCallback, useEffect, useState } from "react";
+import useFetchSearch from "../CustomHooks/useFetchSearch";
+import useFetchEntity from "../CustomHooks/useFetchEntity";
 import {
   pushEntityMainNode,
   pushEntityNode,
   pushNewsNode,
   pushNodes,
-} from "../Helpers/nodeAdders";
-import { pushEntityLinks, pushLinks } from "../Helpers/linkAdders";
-import useFetchEntity from "../CustomHooks/useFetchEntity";
-import { getJaccardIndexOf } from "../Helpers/jaccardHelper";
+} from "../Helper Functions/nodeAdders";
+import { pushLinks, pushEntityLinks } from "../Helper Functions/linkAdders";
+import { getJaccardIndexOf } from "../Helper Functions/getJaccardIndexOf";
 
 const NewsNodeFrame = () => {
-  const [searchText, setSearchText] = useState("");
+  //* States
+
+  const [searchbarText, setSearchbarText] = useState("");
   const [selectedEntityType, setSelectedEntityType] = useState("");
   const [currentEntityType, setCurrentEntityType] = useState(null);
   const [currentEntityQid, setCurrentEntityQid] = useState(null);
-  const [currentNode, setCurrentNode] = useState(null);
-  const [sliderValue, setSliderValue] = useState(0.4);
-
-  const isSelected = (value) => {
-    if (selectedEntityType === value) {
-      return true;
-    } else return false;
-  };
-
-  const handleRadioClick = (e) => {
-    setSelectedEntityType(e.target.value);
-    console.log(e.target.value);
-  };
-
-  const handleSlider = (e) => {
-    setSliderValue(e.target.value);
-    console.log(e.target.value);
-  };
+  const [clickedNode, setClickedNode] = useState(null);
+  const [jaccardThreshold, setJaccardThreshold] = useState(0.4);
+  const [initialNodeAmount, setInitialNodeAmount] = useState(10);
+  const [nodes, setNodes] = useState({
+    nodes: [],
+    links: [],
+  });
 
   const {
     data: newsData,
     isLoading: isLoadingNewsData,
-    setIsLoading: setIsLoadingNewsData,
     error: errorNewsData,
   } = useFetchSearch(
     "http://195.37.233.209:4000/graphql",
     selectedEntityType,
-    searchText
+    searchbarText,
+    initialNodeAmount
   );
 
   const {
@@ -57,10 +48,24 @@ const NewsNodeFrame = () => {
     currentEntityQid
   );
 
-  const [nodes, setNodes] = useState({
-    nodes: [],
-    links: [],
-  });
+  const isEntitySelected = (value) => {
+    if (selectedEntityType === value) {
+      return true;
+    } else return false;
+  };
+
+  const handleEntityTypeSelection = (e) => {
+    setSelectedEntityType(e.target.value);
+    console.log(e.target.value);
+  };
+
+  const handleJaccardThreshold = (e) => {
+    setJaccardThreshold(e.target.value);
+  };
+
+  const handleInitialNodeAmount = (e) => {
+    setInitialNodeAmount(e.target.value);
+  };
 
   useEffect(() => {
     if (newsData) {
@@ -76,7 +81,7 @@ const NewsNodeFrame = () => {
             let jacLoc = getJaccardIndexOf(news.loc, comparisonNews.loc);
             let jaccardIndex = (jacOrg + jacPer + jacLoc) / 3;
 
-            if (jaccardIndex >= sliderValue) {
+            if (jaccardIndex >= jaccardThreshold) {
               links.push({
                 source: news.id,
                 target: comparisonNews.id,
@@ -87,7 +92,7 @@ const NewsNodeFrame = () => {
       });
       setNodes({ nodes: nodes, links: links });
     }
-  }, [newsData, sliderValue]);
+  }, [newsData, jaccardThreshold]);
 
   useEffect(() => {
     console.clear();
@@ -101,57 +106,41 @@ const NewsNodeFrame = () => {
       const nodes = [];
       const links = [];
 
-      if (currentNode?.__typename === "org") {
-        pushEntityMainNode(nodes, entityData, currentNode?.__typename, "green");
+      if (clickedNode?.__typename === "org") {
+        pushEntityMainNode(nodes, entityData, clickedNode?.__typename, "green");
         entityData?.country?.forEach((loc) => {
           pushEntityNode(nodes, loc, "loc", "lightblue");
-          //pushEntityLinks(links, currentNode?.id, loc.qid);
-          links.push({
-            source: currentNode?.id,
-            target: loc.qid,
-          });
+          pushEntityLinks(links, clickedNode, loc);
         });
 
         entityData?.ceo?.forEach((ceo) => {
           pushEntityNode(nodes, ceo, "per", "pink");
-          //pushEntityLinks(links, currentNode?.id, ceo.qid);
-          links.push({
-            source: currentNode?.id,
-            target: ceo.qid,
-          });
+          pushEntityLinks(links, clickedNode, ceo);
         });
 
         entityData?.subsidiary?.forEach((org) => {
           pushEntityNode(nodes, org, "org", "lightgreen");
-          //pushEntityLinks(links, currentNode?.id, org.qid);
-          links.push({
-            source: currentNode?.id,
-            target: org.qid,
-          });
+          pushEntityLinks(links, clickedNode, org);
         });
       }
-      if (currentNode?.__typename === "loc") {
-        pushEntityMainNode(nodes, entityData, currentNode?.__typename, "blue");
+      if (clickedNode?.__typename === "loc") {
+        pushEntityMainNode(nodes, entityData, clickedNode?.__typename, "blue");
         if (entityData["head_of_state"]) {
           console.log(entityData["head_of_state"]);
           /* entityData["head_of_state"]?.forEach((per) => {
             pushEntityNode(nodes, per, "per", "pink");
             links.push({
-              source: currentNode?.id,
+              source: clickedNode?.id,
               target: per.qid,
             });
           }); */
         }
       }
-      if (currentNode?.__typename === "per") {
-        pushEntityMainNode(nodes, entityData, currentNode?.__typename, "red");
+      if (clickedNode?.__typename === "per") {
+        pushEntityMainNode(nodes, entityData, clickedNode?.__typename, "red");
         entityData?.employer?.forEach((org) => {
           pushEntityNode(nodes, org, "org", "lightgreen");
-          links.push({
-            source: currentNode?.id,
-            target: org.qid,
-          });
-          //pushEntityLinks(links, currentNode?.id, org.qid);
+          pushEntityLinks(links, clickedNode, org);
         });
       }
 
@@ -165,7 +154,7 @@ const NewsNodeFrame = () => {
       const links = [];
 
       const node = nodeArr[0];
-      setCurrentNode(node);
+      setClickedNode(node);
 
       switch (node.__typename) {
         case "org":
@@ -221,13 +210,15 @@ const NewsNodeFrame = () => {
   return (
     <div>
       <Search
-        searchText={searchText}
-        changeSearchText={(text) => setSearchText(text)}
-        isSelected={isSelected}
+        searchbarText={searchbarText}
+        changeSearchbarText={(searchbarText) => setSearchbarText(searchbarText)}
+        isEntitySelected={isEntitySelected}
         selectedEntityType={selectedEntityType}
-        handleRadioClick={handleRadioClick}
-        handleSlider={handleSlider}
-        sliderValue={sliderValue}
+        handleEntityTypeSelection={handleEntityTypeSelection}
+        handleJaccardThreshold={handleJaccardThreshold}
+        jaccardThreshold={jaccardThreshold}
+        initialNodeAmount={initialNodeAmount}
+        handleInitialNodeAmount={handleInitialNodeAmount}
       />
       {isLoadingNewsData && !errorNewsData && <p>Loading...</p>}
       {!isLoadingNewsData && (

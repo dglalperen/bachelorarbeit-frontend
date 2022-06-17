@@ -1,16 +1,15 @@
-//TODO: When searching a per, loc or org, it should show a node if existing
-
 const Search = ({
-  changeSearchText,
-  searchText,
-  handleRadioClick,
-  isSelected,
-  handleSlider,
-  sliderValue,
+  searchbarText,
+  changeSearchbarText,
+  initialNodeAmount,
+  handleInitialNodeAmount,
+  jaccardThreshold,
+  handleJaccardThreshold,
+  handleEntityTypeSelection,
+  isEntitySelected,
 }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(searchText);
   };
   return (
     <div className="search">
@@ -18,10 +17,10 @@ const Search = ({
         <input
           className="textInput"
           type="text"
-          value={searchText}
+          value={searchbarText}
           placeholder="Search for some Person, Organization or Country"
           onChange={(e) => {
-            changeSearchText(e.target.value);
+            changeSearchbarText(e.target.value);
           }}
         />
         <div className="radio">
@@ -30,8 +29,8 @@ const Search = ({
           </label>
           <input
             name="entity-type"
-            checked={isSelected("org")}
-            onChange={(e) => handleRadioClick(e)}
+            checked={isEntitySelected("org")}
+            onChange={(e) => handleEntityTypeSelection(e)}
             type="radio"
             value="org"
           />
@@ -42,8 +41,8 @@ const Search = ({
           </label>
           <input
             name="entity-type"
-            checked={isSelected("loc")}
-            onChange={(e) => handleRadioClick(e)}
+            checked={isEntitySelected("loc")}
+            onChange={(e) => handleEntityTypeSelection(e)}
             type="radio"
             value="loc"
           />
@@ -54,25 +53,36 @@ const Search = ({
           </label>
           <input
             name="entity-type"
-            checked={isSelected("per")}
-            onChange={(e) => handleRadioClick(e)}
+            checked={isEntitySelected("per")}
+            onChange={(e) => handleEntityTypeSelection(e)}
             type="radio"
             value="per"
           />
         </div>
         <div className="jaccardSlider">
           <label htmlFor="jaccardSlider">
-            Jaccard Threshold: {sliderValue}
+            Jaccard Threshold: {jaccardThreshold}
           </label>
           <input
             type="range"
             name="jaccardSlider"
-            min={0.0}
+            min={0.1}
             max={1.0}
             step={0.1}
-            id="jaccardSlider"
-            value={sliderValue}
-            onChange={(e) => handleSlider(e)}
+            value={jaccardThreshold}
+            onChange={(e) => handleJaccardThreshold(e)}
+          />
+        </div>
+        <div className="jaccardSlider">
+          <label htmlFor="nodeAmount">Node Amount: {initialNodeAmount}</label>
+          <input
+            type="range"
+            name="nodeAmount"
+            min={10}
+            max={300}
+            step={10}
+            value={initialNodeAmount}
+            onChange={(e) => handleInitialNodeAmount(e)}
           />
         </div>
       </form>

@@ -1,18 +1,6 @@
 import { useState, useEffect } from "react";
-import { getEntityQuery } from "../Queries/getEntityQuery";
-
-const getDataUnwrapper = (entityType) => {
-  switch (entityType) {
-    case "org":
-      return "companyByQid";
-    case "per":
-      return "personByQid";
-    case "loc":
-      return "locationByQid";
-    default:
-      break;
-  }
-};
+import { getEntityQuery } from "../Helper Functions/getEntityQuery";
+import { getDataUnwrapper } from "../Helper Functions/getDataUnwrapper";
 
 const useFetchEntity = (url, entityType, qid) => {
   const [data, setData] = useState(null);
@@ -21,7 +9,6 @@ const useFetchEntity = (url, entityType, qid) => {
   const QUERY = getEntityQuery(entityType, qid);
 
   useEffect(() => {
-    console.log("useFetchEntity was called");
     setIsLoading(true);
     fetch(url, {
       method: "POST",

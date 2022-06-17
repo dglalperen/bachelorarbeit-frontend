@@ -1,4 +1,4 @@
-import { getEntityQuery } from "../Queries/getEntityQuery";
+import { getEntityQuery } from "./getEntityQuery";
 
 const getDataUnwrapper = (entityType) => {
   switch (entityType) {
