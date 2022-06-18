@@ -33,6 +33,14 @@ const getEntityQuery = (entityTypeStr, qid) => {
             qid
             label
           }
+          capital{
+            qid
+            label
+          }
+          highest_judicial_authority{
+            qid
+            label
+          }
         }
       }`;
     case "per":

@@ -5,6 +5,13 @@ function pushLinks(arrToPushTo, source, target) {
   });
 }
 
+function pushNewsLink(arrToPushTo, source, target) {
+  arrToPushTo.push({
+    source: source?.id,
+    target: target?.id,
+  });
+}
+
 function pushEntityLinks(arrToPushTo, source, target) {
   if (source && target) {
     arrToPushTo.push({
@@ -14,4 +21,4 @@ function pushEntityLinks(arrToPushTo, source, target) {
   }
 }
 
-export { pushLinks, pushEntityLinks };
+export { pushLinks, pushEntityLinks, pushNewsLink };

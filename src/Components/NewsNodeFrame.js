@@ -9,7 +9,11 @@ import {
   pushNewsNode,
   pushNodes,
 } from "../Helper Functions/nodeAdders";
-import { pushLinks, pushEntityLinks } from "../Helper Functions/linkAdders";
+import {
+  pushLinks,
+  pushEntityLinks,
+  pushNewsLink,
+} from "../Helper Functions/linkAdders";
 import { getJaccardIndexOf } from "../Helper Functions/getJaccardIndexOf";
 
 const NewsNodeFrame = () => {
@@ -74,18 +78,14 @@ const NewsNodeFrame = () => {
       newsData.forEach((news) => {
         pushNewsNode(nodes, news);
         newsData.forEach((comparisonNews) => {
-          if (news === comparisonNews) {
-          } else {
+          if (news !== comparisonNews) {
             let jacPer = getJaccardIndexOf(news.per, comparisonNews.per);
             let jacOrg = getJaccardIndexOf(news.org, comparisonNews.org);
             let jacLoc = getJaccardIndexOf(news.loc, comparisonNews.loc);
             let jaccardIndex = (jacOrg + jacPer + jacLoc) / 3;
 
             if (jaccardIndex >= jaccardThreshold) {
-              links.push({
-                source: news.id,
-                target: comparisonNews.id,
-              });
+              pushNewsLink(links, news, comparisonNews);
             }
           }
         });
@@ -125,15 +125,26 @@ const NewsNodeFrame = () => {
       }
       if (clickedNode?.__typename === "loc") {
         pushEntityMainNode(nodes, entityData, clickedNode?.__typename, "blue");
+        if (entityData.capital) {
+          pushEntityNode(nodes, entityData.capital, "loc", "lightblue");
+          pushEntityLinks(links, clickedNode, entityData?.capital);
+        }
         if (entityData["head_of_state"]) {
-          console.log(entityData["head_of_state"]);
-          /* entityData["head_of_state"]?.forEach((per) => {
-            pushEntityNode(nodes, per, "per", "pink");
-            links.push({
-              source: clickedNode?.id,
-              target: per.qid,
-            });
-          }); */
+          pushEntityNode(nodes, entityData.head_of_state, "per", "pink");
+          pushEntityLinks(links, clickedNode, entityData?.head_of_state);
+        }
+        if (entityData.highest_judicial_authority) {
+          pushEntityNode(
+            nodes,
+            entityData.highest_judicial_authority,
+            "per",
+            "pink"
+          );
+          pushEntityLinks(
+            links,
+            clickedNode,
+            entityData?.highest_judicial_authority
+          );
         }
       }
       if (clickedNode?.__typename === "per") {
