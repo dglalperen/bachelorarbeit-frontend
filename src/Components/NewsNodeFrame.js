@@ -1,6 +1,6 @@
 import ForceGraph2D from "react-force-graph-2d";
 import Search from "./Search";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useFetchSearch from "../CustomHooks/useFetchSearch";
 import useFetchEntity from "../CustomHooks/useFetchEntity";
 import {
@@ -25,8 +25,8 @@ const NewsNodeFrame = () => {
   const [currentEntityQid, setCurrentEntityQid] = useState(null);
   const [currentEntityName, setCurrentEntityName] = useState(null);
   const [clickedNode, setClickedNode] = useState(null);
-  const [jaccardThreshold, setJaccardThreshold] = useState(0.4);
-  const [initialNodeAmount, setInitialNodeAmount] = useState(100);
+  const [jaccardThreshold, setJaccardThreshold] = useState(0.8);
+  const [initialNodeAmount, setInitialNodeAmount] = useState(50);
   const [nodes, setNodes] = useState({
     nodes: [],
     links: [],
@@ -77,22 +77,35 @@ const NewsNodeFrame = () => {
     if (newsData) {
       const nodes = [];
       const links = [];
+      const headlines = new Set([]);
+      const ids = new Set([]);
+
       newsData.forEach((news) => {
-        pushNewsNode(nodes, news);
+        const isDuplicate = headlines.has(news.headline);
+        if (!isDuplicate) {
+          headlines.add(news.headline);
+          ids.add(news.id);
+          pushNewsNode(nodes, news);
+        }
+      });
+      newsData.forEach((cmpNode1) => {
+        newsData.forEach((cmpNode2) => {
+          // checking if the nodes are still existing
+          if (ids.has(cmpNode2.id) && ids.has(cmpNode1.id)) {
+            if (cmpNode1 !== cmpNode2) {
+              let jacPer = getJaccardIndexOf(cmpNode1.per, cmpNode2.per);
+              let jacOrg = getJaccardIndexOf(cmpNode1.org, cmpNode2.org);
+              let jacLoc = getJaccardIndexOf(cmpNode1.loc, cmpNode2.loc);
+              let jaccardIndex = (jacOrg + jacPer + jacLoc) / 3;
 
-        newsData.forEach((comparisonNews) => {
-          if (news !== comparisonNews) {
-            let jacPer = getJaccardIndexOf(news.per, comparisonNews.per);
-            let jacOrg = getJaccardIndexOf(news.org, comparisonNews.org);
-            let jacLoc = getJaccardIndexOf(news.loc, comparisonNews.loc);
-            let jaccardIndex = (jacOrg + jacPer + jacLoc) / 3;
-
-            if (jaccardIndex >= jaccardThreshold) {
-              pushNewsLink(links, news, comparisonNews);
+              if (jaccardIndex >= jaccardThreshold) {
+                pushNewsLink(links, cmpNode1, cmpNode2);
+              }
             }
           }
         });
       });
+
       setNodes({ nodes: nodes, links: links });
     }
   }, [newsData, jaccardThreshold]);
@@ -247,7 +260,7 @@ const NewsNodeFrame = () => {
       {!isLoadingNewsData && (
         <ForceGraph2D
           height={850}
-          width={1800}
+          width={1000}
           nodeColor={"color"}
           nodeLabel={"name"}
           nodeVal={"sizeInPx"}
@@ -288,5 +301,36 @@ const NewsNodeFrame = () => {
     </div>
   );
 };
+
+// //! Pushing Nodes and Links - Initial
+// newsData.forEach((news) => {
+//   pushNewsNode(nodes, news);
+//   newsData.forEach((comparisonNews) => {
+//     if (news !== comparisonNews) {
+//       let jacPer = getJaccardIndexOf(news.per, comparisonNews.per);
+//       let jacOrg = getJaccardIndexOf(news.org, comparisonNews.org);
+//       let jacLoc = getJaccardIndexOf(news.loc, comparisonNews.loc);
+//       let jaccardIndex = (jacOrg + jacPer + jacLoc) / 3;
+
+//       if (jaccardIndex >= jaccardThreshold) {
+//         pushNewsLink(links, news, comparisonNews);
+//       }
+//     }
+//   });
+// });
+// //! Removing Duplicates
+// const uniqueNodes = [];
+// const unique = nodes.filter((node) => {
+//   const isDuplicate = headlines.has(node.name);
+
+//   if (!isDuplicate) {
+//     headlines.add(node.name);
+//     uniqueNodes.push(node);
+//     return true;
+//   }
+//   return false;
+// });
+// console.log(unique);
+// setNodes({ nodes: unique, links: links });
 
 export default NewsNodeFrame;
