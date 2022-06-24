@@ -1,6 +1,6 @@
 import { IoReloadCircleSharp } from "react-icons/io5";
 
-const Navbar = () => {
+const Header = () => {
   return (
     <nav className="navbar">
       <h1>Data Visualization Bachelorarbeit</h1>
@@ -11,4 +11,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default Header;

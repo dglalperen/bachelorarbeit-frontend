@@ -1,5 +1,5 @@
 import ForceGraph2D from "react-force-graph-2d";
-import Search from "./Search";
+import Search from "./SubComponents/Search";
 import { useEffect, useState } from "react";
 import useFetchSearch from "../CustomHooks/useFetchSearch";
 import useFetchEntity from "../CustomHooks/useFetchEntity";
@@ -16,7 +16,7 @@ import {
 } from "../Helper Functions/linkAdders";
 import { getJaccardIndexOf } from "../Helper Functions/getJaccardIndexOf";
 
-const NewsNodeFrame = () => {
+const Main = () => {
   //* States
 
   const [searchbarText, setSearchbarText] = useState("");
@@ -301,36 +301,4 @@ const NewsNodeFrame = () => {
     </div>
   );
 };
-
-// //! Pushing Nodes and Links - Initial
-// newsData.forEach((news) => {
-//   pushNewsNode(nodes, news);
-//   newsData.forEach((comparisonNews) => {
-//     if (news !== comparisonNews) {
-//       let jacPer = getJaccardIndexOf(news.per, comparisonNews.per);
-//       let jacOrg = getJaccardIndexOf(news.org, comparisonNews.org);
-//       let jacLoc = getJaccardIndexOf(news.loc, comparisonNews.loc);
-//       let jaccardIndex = (jacOrg + jacPer + jacLoc) / 3;
-
-//       if (jaccardIndex >= jaccardThreshold) {
-//         pushNewsLink(links, news, comparisonNews);
-//       }
-//     }
-//   });
-// });
-// //! Removing Duplicates
-// const uniqueNodes = [];
-// const unique = nodes.filter((node) => {
-//   const isDuplicate = headlines.has(node.name);
-
-//   if (!isDuplicate) {
-//     headlines.add(node.name);
-//     uniqueNodes.push(node);
-//     return true;
-//   }
-//   return false;
-// });
-// console.log(unique);
-// setNodes({ nodes: unique, links: links });
-
-export default NewsNodeFrame;
+export default Main;

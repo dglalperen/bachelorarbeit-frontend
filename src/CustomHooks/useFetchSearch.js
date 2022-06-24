@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 const useFetchSearch = (url, entityType, entity, nodeAmount) => {
-  const [data, setSomeData] = useState([]);
+  const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const QUERY = `query {
@@ -36,7 +36,7 @@ const useFetchSearch = (url, entityType, entity, nodeAmount) => {
       .then((data) => {
         console.log("api is called");
         console.log(data.data.newsSearch);
-        setSomeData(data.data.newsSearch);
+        setData(data.data.newsSearch);
         setIsLoading(false);
         setError(null);
       })
