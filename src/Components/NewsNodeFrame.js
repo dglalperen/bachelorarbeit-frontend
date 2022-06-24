@@ -15,18 +15,18 @@ import {
   pushNewsLink,
 } from "../Helper Functions/linkAdders";
 import { getJaccardIndexOf } from "../Helper Functions/getJaccardIndexOf";
-import { click } from "@testing-library/user-event/dist/click";
 
 const NewsNodeFrame = () => {
   //* States
 
-  const [searchbarText, setSearchbarText] = useState("Elon Musk");
-  const [selectedEntityType, setSelectedEntityType] = useState("per");
+  const [searchbarText, setSearchbarText] = useState("");
+  const [selectedEntityType, setSelectedEntityType] = useState("");
   const [currentEntityType, setCurrentEntityType] = useState(null);
   const [currentEntityQid, setCurrentEntityQid] = useState(null);
+  const [currentEntityName, setCurrentEntityName] = useState(null);
   const [clickedNode, setClickedNode] = useState(null);
-  const [jaccardThreshold, setJaccardThreshold] = useState(0.6);
-  const [initialNodeAmount, setInitialNodeAmount] = useState(102);
+  const [jaccardThreshold, setJaccardThreshold] = useState(0.4);
+  const [initialNodeAmount, setInitialNodeAmount] = useState(100);
   const [nodes, setNodes] = useState({
     nodes: [],
     links: [],
@@ -50,7 +50,8 @@ const NewsNodeFrame = () => {
   } = useFetchEntity(
     "http://195.37.233.209:4000/graphql",
     currentEntityType,
-    currentEntityQid
+    currentEntityQid,
+    currentEntityName
   );
 
   const isEntitySelected = (value) => {
@@ -96,10 +97,10 @@ const NewsNodeFrame = () => {
     }
   }, [newsData, jaccardThreshold]);
 
-  /*  useEffect(() => {
+  useEffect(() => {
     console.clear();
     console.log(nodes);
-  }, [nodes]); */
+  }, [nodes]);
 
   //! When Child Node is clicked, the entityData changes
   //! Causing the view to update
@@ -164,54 +165,49 @@ const NewsNodeFrame = () => {
   useEffect(() => {
     console.log("clicked Node: ");
     console.log(clickedNode);
-  }, [clickedNode]);
-
-  const handleClick = useCallback(
-    (nodeArr) => {
-      const nodes = [];
-      const links = [];
-
-      const node = nodeArr[0];
-      setClickedNode(node);
-
-      switch (node.__typename) {
+    const links = [];
+    const nodes = [];
+    if (clickedNode) {
+      switch (clickedNode.__typename) {
         case "org":
-          setCurrentEntityType(node.__typename);
-          setCurrentEntityQid(node.id);
+          setCurrentEntityType(clickedNode.__typename);
+          setCurrentEntityQid(clickedNode.id);
+          setCurrentEntityName(clickedNode.name);
           break;
         case "loc":
-          setCurrentEntityType(node.__typename);
-          setCurrentEntityQid(node.id);
+          setCurrentEntityType(clickedNode.__typename);
+          setCurrentEntityQid(clickedNode.id);
+          setCurrentEntityName(clickedNode.name);
 
           break;
         case "per":
-          setCurrentEntityType(node.__typename);
-          setCurrentEntityQid(node.id);
+          setCurrentEntityType(clickedNode.__typename);
+          setCurrentEntityQid(clickedNode.id);
+          setCurrentEntityName(clickedNode.name);
 
           break;
 
         case "News":
-          pushNewsNode(nodes, node);
+          pushNewsNode(nodes, clickedNode);
 
-          node.org.forEach((orgNode) => {
+          clickedNode.org.forEach((orgNode) => {
             if (orgNode.sameAs) {
-              console.log(orgNode);
               pushNodes(nodes, orgNode, "org", "lightgreen");
-              pushLinks(links, node, orgNode);
+              pushLinks(links, clickedNode, orgNode);
             }
           });
 
-          node.per.forEach((perNode) => {
+          clickedNode.per.forEach((perNode) => {
             if (perNode.sameAs) {
               pushNodes(nodes, perNode, "per", "red");
-              pushLinks(links, node, perNode);
+              pushLinks(links, clickedNode, perNode);
             }
           });
 
-          node.loc.forEach((locNode) => {
+          clickedNode.loc.forEach((locNode) => {
             if (locNode.sameAs) {
               pushNodes(nodes, locNode, "loc", "lightblue");
-              pushLinks(links, node, locNode);
+              pushLinks(links, clickedNode, locNode);
             }
 
             setNodes(() => setNodes({ nodes: nodes, links: links }));
@@ -220,9 +216,12 @@ const NewsNodeFrame = () => {
         default:
           break;
       }
-    },
-    [nodes]
-  );
+    }
+  }, [clickedNode]);
+
+  const handleClick = (nodeArr) => {
+    setClickedNode(nodeArr[0]);
+  };
 
   return (
     <div>
@@ -239,8 +238,15 @@ const NewsNodeFrame = () => {
       />
       {isLoadingNewsData && !errorNewsData && <p>Loading...</p>}
       {!isLoadingNewsData && (
+        <div className="error">
+          {errorEntityData && <p>{errorEntityData}</p>}
+          {errorNewsData && <p>{errorNewsData}</p>}
+        </div>
+      )}
+
+      {!isLoadingNewsData && (
         <ForceGraph2D
-          height={900}
+          height={850}
           width={1800}
           nodeColor={"color"}
           nodeLabel={"name"}
