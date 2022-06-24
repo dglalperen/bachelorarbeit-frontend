@@ -15,17 +15,18 @@ import {
   pushNewsLink,
 } from "../Helper Functions/linkAdders";
 import { getJaccardIndexOf } from "../Helper Functions/getJaccardIndexOf";
+import { click } from "@testing-library/user-event/dist/click";
 
 const NewsNodeFrame = () => {
   //* States
 
-  const [searchbarText, setSearchbarText] = useState("");
-  const [selectedEntityType, setSelectedEntityType] = useState("");
+  const [searchbarText, setSearchbarText] = useState("Elon Musk");
+  const [selectedEntityType, setSelectedEntityType] = useState("per");
   const [currentEntityType, setCurrentEntityType] = useState(null);
   const [currentEntityQid, setCurrentEntityQid] = useState(null);
   const [clickedNode, setClickedNode] = useState(null);
-  const [jaccardThreshold, setJaccardThreshold] = useState(0.4);
-  const [initialNodeAmount, setInitialNodeAmount] = useState(10);
+  const [jaccardThreshold, setJaccardThreshold] = useState(0.6);
+  const [initialNodeAmount, setInitialNodeAmount] = useState(102);
   const [nodes, setNodes] = useState({
     nodes: [],
     links: [],
@@ -60,7 +61,6 @@ const NewsNodeFrame = () => {
 
   const handleEntityTypeSelection = (e) => {
     setSelectedEntityType(e.target.value);
-    console.log(e.target.value);
   };
 
   const handleJaccardThreshold = (e) => {
@@ -71,12 +71,14 @@ const NewsNodeFrame = () => {
     setInitialNodeAmount(e.target.value);
   };
 
+  //! Initial Link Setting
   useEffect(() => {
     if (newsData) {
       const nodes = [];
       const links = [];
       newsData.forEach((news) => {
         pushNewsNode(nodes, news);
+
         newsData.forEach((comparisonNews) => {
           if (news !== comparisonNews) {
             let jacPer = getJaccardIndexOf(news.per, comparisonNews.per);
@@ -94,10 +96,10 @@ const NewsNodeFrame = () => {
     }
   }, [newsData, jaccardThreshold]);
 
-  useEffect(() => {
+  /*  useEffect(() => {
     console.clear();
     console.log(nodes);
-  }, [nodes]);
+  }, [nodes]); */
 
   //! When Child Node is clicked, the entityData changes
   //! Causing the view to update
@@ -159,6 +161,11 @@ const NewsNodeFrame = () => {
     }
   }, [entityData]);
 
+  useEffect(() => {
+    console.log("clicked Node: ");
+    console.log(clickedNode);
+  }, [clickedNode]);
+
   const handleClick = useCallback(
     (nodeArr) => {
       const nodes = [];
@@ -184,12 +191,11 @@ const NewsNodeFrame = () => {
           break;
 
         case "News":
-          console.log("Node Array Before: ");
-          console.log(nodes);
           pushNewsNode(nodes, node);
 
           node.org.forEach((orgNode) => {
             if (orgNode.sameAs) {
+              console.log(orgNode);
               pushNodes(nodes, orgNode, "org", "lightgreen");
               pushLinks(links, node, orgNode);
             }
@@ -234,12 +240,14 @@ const NewsNodeFrame = () => {
       {isLoadingNewsData && !errorNewsData && <p>Loading...</p>}
       {!isLoadingNewsData && (
         <ForceGraph2D
-          height={1000}
+          height={900}
           width={1800}
           nodeColor={"color"}
           nodeLabel={"name"}
-          linkAutoColorBy={"__typename"}
           nodeVal={"sizeInPx"}
+          linkColor={"red"}
+          backgroundColor={"white"}
+          linkWidth={5}
           linkDirectionalParticles={3}
           graphData={nodes}
           nodeCanvasObjectMode={() => "after"}
@@ -249,7 +257,7 @@ const NewsNodeFrame = () => {
             ctx.font = `${fontSize}px Sans-Serif`;
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            ctx.fillStyle = node.__typename === "News" ? "white" : "black";
+            ctx.fillStyle = node.__typename === "News" ? "black" : "black";
             if (node.__typename === "News") {
               const lineHeight = fontSize * 2;
               const lines = label.split(",");
@@ -263,7 +271,7 @@ const NewsNodeFrame = () => {
               ctx.fillText(label, node.x, node.y + 2.5);
             }
           }}
-          onNodeClick={(node, event) => {
+          onNodeClick={(node) => {
             if (node.__typename !== "News") {
               const arr = [node];
               handleClick(arr);

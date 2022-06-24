@@ -34,8 +34,9 @@ const useFetchSearch = (url, entityType, entity, nodeAmount) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        setSomeData(data["data"]["newsSearch"]);
         console.log("api is called");
+        console.log(data.data.newsSearch);
+        setSomeData(data.data.newsSearch);
         setIsLoading(false);
         setError(null);
       })

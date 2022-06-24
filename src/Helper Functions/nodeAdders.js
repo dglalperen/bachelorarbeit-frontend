@@ -3,7 +3,7 @@ function pushNewsNode(arrToPushTo, data) {
     id: data?.id,
     name: data?.headline,
     __typename: data?.__typename,
-    color: "rgba(236, 213, 225, 0.7)",
+    color: "rgba(233, 245, 10, 0.8)",
     sizeInPx: 6,
   });
 }

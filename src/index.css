@@ -115,12 +115,22 @@ form{
 }
 
 .jaccardSlider label {
-  padding-right: 20px;
+  padding-right: 10px;
 }
 
 .jaccardSlider p {
   color: white;
   font-size: xx-large;
+}
+
+#inputNumber{
+  color: black;
+  background-color: white;
+  border-radius: 15px;
+  padding: 3px;
+  font-size: 1em;
+  text-align: center;
+  font-weight: bold;
 }
 
 

@@ -74,13 +74,13 @@ const Search = ({
           />
         </div>
         <div className="jaccardSlider">
-          <label htmlFor="nodeAmount">Node Amount: {initialNodeAmount}</label>
+          <label htmlFor="nodeAmount">Node Amount:</label>
           <input
-            type="range"
+            id="inputNumber"
+            type="number"
             name="nodeAmount"
             min={10}
-            max={300}
-            step={10}
+            max={1000}
             value={initialNodeAmount}
             onChange={(e) => handleInitialNodeAmount(e)}
           />
