@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { getEntityQuery } from "../Helper Functions/getEntityQuery";
-import { getDataUnwrapper } from "../Helper Functions/getDataUnwrapper";
+import { getEntityQuery } from "../HelperFunctions/getEntityQuery";
+import { getDataUnwrapper } from "../HelperFunctions/getDataUnwrapper";
 
 const useFetchEntity = (url, entityType, qid, entityName) => {
   const [data, setData] = useState(null);

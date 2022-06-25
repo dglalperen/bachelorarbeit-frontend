@@ -8,13 +8,13 @@ import {
   pushEntityNode,
   pushNewsNode,
   pushNodes,
-} from "../Helper Functions/nodeAdders";
+} from "../HelperFunctions/nodeAdders";
 import {
   pushLinks,
   pushEntityLinks,
   pushNewsLink,
-} from "../Helper Functions/linkAdders";
-import { getJaccardIndexOf } from "../Helper Functions/getJaccardIndexOf";
+} from "../HelperFunctions/linkAdders";
+import { getJaccardIndexOf } from "../HelperFunctions/getJaccardIndexOf";
 
 const Main = () => {
   //* States
@@ -25,13 +25,14 @@ const Main = () => {
   const [currentEntityQid, setCurrentEntityQid] = useState(null);
   const [currentEntityName, setCurrentEntityName] = useState(null);
   const [clickedNode, setClickedNode] = useState(null);
-  const [jaccardThreshold, setJaccardThreshold] = useState(0.8);
+  const [jaccardThreshold, setJaccardThreshold] = useState(0.4);
   const [initialNodeAmount, setInitialNodeAmount] = useState(50);
   const [nodes, setNodes] = useState({
     nodes: [],
     links: [],
   });
 
+  //! Fetching Data & Storing in State
   const {
     data: newsData,
     isLoading: isLoadingNewsData,
@@ -54,6 +55,7 @@ const Main = () => {
     currentEntityName
   );
 
+  //! Handler Functions:
   const isEntitySelected = (value) => {
     if (selectedEntityType === value) {
       return true;
@@ -72,26 +74,34 @@ const Main = () => {
     setInitialNodeAmount(e.target.value);
   };
 
-  //! Initial Link Setting
+  const handleNodeClick = (nodeArr) => {
+    setClickedNode(nodeArr[0]);
+  };
+
+  //! useEffect Hook - Dependencies (newsData & jaccardThreshold)
+  //! Creates initial Nodes and Links
+  //! Link creation is considering Jaccard Similarity
   useEffect(() => {
     if (newsData) {
       const nodes = [];
       const links = [];
-      const headlines = new Set([]);
-      const ids = new Set([]);
+      const uniqueHeadlines = new Set([]);
+      const uniqueIDs = new Set([]);
 
+      //* Removing Duplicates from Newsdata
       newsData.forEach((news) => {
-        const isDuplicate = headlines.has(news.headline);
+        const isDuplicate = uniqueHeadlines.has(news.headline);
         if (!isDuplicate) {
-          headlines.add(news.headline);
-          ids.add(news.id);
+          uniqueHeadlines.add(news.headline);
+          uniqueIDs.add(news.id);
           pushNewsNode(nodes, news);
         }
       });
+
+      //* Setting Node Links
       newsData.forEach((cmpNode1) => {
         newsData.forEach((cmpNode2) => {
-          // checking if the nodes are still existing
-          if (ids.has(cmpNode2.id) && ids.has(cmpNode1.id)) {
+          if (uniqueIDs.has(cmpNode2.id) && uniqueIDs.has(cmpNode1.id)) {
             if (cmpNode1 !== cmpNode2) {
               let jacPer = getJaccardIndexOf(cmpNode1.per, cmpNode2.per);
               let jacOrg = getJaccardIndexOf(cmpNode1.org, cmpNode2.org);
@@ -110,114 +120,113 @@ const Main = () => {
     }
   }, [newsData, jaccardThreshold]);
 
-  useEffect(() => {
-    console.clear();
-    console.log(nodes);
-  }, [nodes]);
-
-  //! When Child Node is clicked, the entityData changes
-  //! Causing the view to update
+  //! useEffect Hook - Dependency (entityData)
+  //! On Change of entityData --> Updates the "Nodes" State
+  //! Displays clicked Node and his children
   useEffect(() => {
     if (entityData) {
       const nodes = [];
       const links = [];
-
-      if (clickedNode?.__typename === "org") {
-        pushEntityMainNode(nodes, entityData, clickedNode?.__typename, "green");
-        entityData?.country?.forEach((loc) => {
-          pushEntityNode(nodes, loc, "loc", "lightblue");
-          pushEntityLinks(links, clickedNode, loc);
-        });
-
-        entityData?.ceo?.forEach((ceo) => {
-          pushEntityNode(nodes, ceo, "per", "pink");
-          pushEntityLinks(links, clickedNode, ceo);
-        });
-
-        entityData?.subsidiary?.forEach((org) => {
-          pushEntityNode(nodes, org, "org", "lightgreen");
-          pushEntityLinks(links, clickedNode, org);
-        });
-      }
-      if (clickedNode?.__typename === "loc") {
-        pushEntityMainNode(nodes, entityData, clickedNode?.__typename, "blue");
-        if (entityData.capital) {
-          pushEntityNode(nodes, entityData.capital, "loc", "lightblue");
-          pushEntityLinks(links, clickedNode, entityData?.capital);
-        }
-        if (entityData["head_of_state"]) {
-          pushEntityNode(nodes, entityData.head_of_state, "per", "pink");
-          pushEntityLinks(links, clickedNode, entityData?.head_of_state);
-        }
-        if (entityData.highest_judicial_authority) {
-          pushEntityNode(
+      switch (clickedNode?.__typename) {
+        case "org":
+          pushEntityMainNode(
             nodes,
-            entityData.highest_judicial_authority,
-            "per",
-            "pink"
+            entityData,
+            clickedNode?.__typename,
+            "green"
           );
-          pushEntityLinks(
-            links,
-            clickedNode,
-            entityData?.highest_judicial_authority
-          );
-        }
-      }
-      if (clickedNode?.__typename === "per") {
-        pushEntityMainNode(nodes, entityData, clickedNode?.__typename, "red");
-        entityData?.employer?.forEach((org) => {
-          pushEntityNode(nodes, org, "org", "lightgreen");
-          pushEntityLinks(links, clickedNode, org);
-        });
-      }
+          entityData?.country?.forEach((loc) => {
+            pushEntityNode(nodes, loc, "loc", "lightblue");
+            pushEntityLinks(links, clickedNode, loc);
+          });
 
+          entityData?.ceo?.forEach((ceo) => {
+            pushEntityNode(nodes, ceo, "per", "pink");
+            pushEntityLinks(links, clickedNode, ceo);
+          });
+
+          entityData?.subsidiary?.forEach((org) => {
+            pushEntityNode(nodes, org, "org", "lightgreen");
+            pushEntityLinks(links, clickedNode, org);
+          });
+          break;
+        case "per":
+          pushEntityMainNode(nodes, entityData, clickedNode?.__typename, "red");
+          entityData?.employer?.forEach((org) => {
+            pushEntityNode(nodes, org, "org", "lightgreen");
+            pushEntityLinks(links, clickedNode, org);
+          });
+          break;
+        case "loc":
+          pushEntityMainNode(
+            nodes,
+            entityData,
+            clickedNode?.__typename,
+            "blue"
+          );
+          if (entityData.capital) {
+            pushEntityNode(nodes, entityData.capital, "loc", "lightblue");
+            pushEntityLinks(links, clickedNode, entityData?.capital);
+          }
+          if (entityData["head_of_state"]) {
+            pushEntityNode(nodes, entityData.head_of_state, "per", "pink");
+            pushEntityLinks(links, clickedNode, entityData?.head_of_state);
+          }
+          if (entityData.highest_judicial_authority) {
+            pushEntityNode(
+              nodes,
+              entityData.highest_judicial_authority,
+              "per",
+              "pink"
+            );
+            pushEntityLinks(
+              links,
+              clickedNode,
+              entityData?.highest_judicial_authority
+            );
+          }
+          break;
+        default:
+          break;
+      }
       setNodes(() => setNodes({ nodes: nodes, links: links }));
     }
   }, [entityData]);
 
+  //! useEffect Hook - Dependency (clickedNode)
+  //! Switches on clicked Node Type
   useEffect(() => {
-    console.log("clicked Node: ");
-    console.log(clickedNode);
     const links = [];
     const nodes = [];
     if (clickedNode) {
       switch (clickedNode.__typename) {
+        // Click on Entity Node
         case "org":
-          setCurrentEntityType(clickedNode.__typename);
-          setCurrentEntityQid(clickedNode.id);
-          setCurrentEntityName(clickedNode.name);
-          break;
+        case "per":
         case "loc":
           setCurrentEntityType(clickedNode.__typename);
           setCurrentEntityQid(clickedNode.id);
           setCurrentEntityName(clickedNode.name);
-
           break;
-        case "per":
-          setCurrentEntityType(clickedNode.__typename);
-          setCurrentEntityQid(clickedNode.id);
-          setCurrentEntityName(clickedNode.name);
-
-          break;
-
+        // Click on News Node
         case "News":
           pushNewsNode(nodes, clickedNode);
 
-          clickedNode.org.forEach((orgNode) => {
+          clickedNode?.org?.forEach((orgNode) => {
             if (orgNode.sameAs) {
               pushNodes(nodes, orgNode, "org", "lightgreen");
               pushLinks(links, clickedNode, orgNode);
             }
           });
 
-          clickedNode.per.forEach((perNode) => {
+          clickedNode?.per?.forEach((perNode) => {
             if (perNode.sameAs) {
               pushNodes(nodes, perNode, "per", "red");
               pushLinks(links, clickedNode, perNode);
             }
           });
 
-          clickedNode.loc.forEach((locNode) => {
+          clickedNode?.loc?.forEach((locNode) => {
             if (locNode.sameAs) {
               pushNodes(nodes, locNode, "loc", "lightblue");
               pushLinks(links, clickedNode, locNode);
@@ -225,16 +234,9 @@ const Main = () => {
 
             setNodes(() => setNodes({ nodes: nodes, links: links }));
           });
-
-        default:
-          break;
       }
     }
   }, [clickedNode]);
-
-  const handleClick = (nodeArr) => {
-    setClickedNode(nodeArr[0]);
-  };
 
   return (
     <div>
@@ -260,7 +262,7 @@ const Main = () => {
       {!isLoadingNewsData && (
         <ForceGraph2D
           height={850}
-          width={1000}
+          width={1800}
           nodeColor={"color"}
           nodeLabel={"name"}
           nodeVal={"sizeInPx"}
@@ -293,8 +295,9 @@ const Main = () => {
           onNodeClick={(node) => {
             if (node.__typename !== "News") {
               const arr = [node];
-              handleClick(arr);
-            } else handleClick(newsData.filter((news) => news.id === node.id));
+              handleNodeClick(arr);
+            } else
+              handleNodeClick(newsData.filter((news) => news.id === node.id));
           }}
         />
       )}
