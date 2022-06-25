@@ -19,13 +19,13 @@ import { getJaccardIndexOf } from "../HelperFunctions/getJaccardIndexOf";
 const Main = () => {
   //* States
 
-  const [searchbarText, setSearchbarText] = useState("");
-  const [selectedEntityType, setSelectedEntityType] = useState("");
   const [currentEntityType, setCurrentEntityType] = useState(null);
   const [currentEntityQid, setCurrentEntityQid] = useState(null);
   const [currentEntityName, setCurrentEntityName] = useState(null);
   const [clickedNode, setClickedNode] = useState(null);
   const [jaccardThreshold, setJaccardThreshold] = useState(0.4);
+  const [searchbarText, setSearchbarText] = useState("");
+  const [selectedEntityType, setSelectedEntityType] = useState("");
   const [initialNodeAmount, setInitialNodeAmount] = useState(50);
   const [nodes, setNodes] = useState({
     nodes: [],
