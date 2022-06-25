@@ -147,14 +147,24 @@ form{
   padding-bottom: 5px;
 }
 
-/* Node Box styling*/
- 
-.force-graph-container{
-  margin: 0 auto;
-  width: 1800px;
+#back-btn{
+  color: white;
 }
 
-canvas{
-  border-radius: 20px;
-  margin: 0 auto;
+#back-btn:hover{
+  cursor: pointer;
+}
+
+/* Node Box styling*/
+
+@media only screen and (min-width: 1800px) {
+  .force-graph-container{
+    margin: 0 auto;
+    width: 1800px;
+  }
+  
+  canvas{
+    border-radius: 20px;
+    margin: 0 auto;
+  }
 }

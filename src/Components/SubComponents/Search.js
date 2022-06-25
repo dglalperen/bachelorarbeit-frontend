@@ -1,3 +1,5 @@
+import { IoArrowBackOutline } from "react-icons/io5";
+
 const Search = ({
   searchbarText,
   changeSearchbarText,
@@ -7,6 +9,8 @@ const Search = ({
   handleJaccardThreshold,
   handleEntityTypeSelection,
   isEntitySelected,
+  canGoBack,
+  handleBackButton,
 }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -85,6 +89,17 @@ const Search = ({
             onChange={(e) => handleInitialNodeAmount(e)}
           />
         </div>
+        {canGoBack && (
+          <h1
+            id="back-btn"
+            onClick={() => {
+              console.log("click");
+              handleBackButton();
+            }}
+          >
+            <IoArrowBackOutline />
+          </h1>
+        )}
       </form>
     </div>
   );
