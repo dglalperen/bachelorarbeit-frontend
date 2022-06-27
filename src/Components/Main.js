@@ -17,8 +17,7 @@ import {
 import { getJaccardIndexOf } from "../HelperFunctions/getJaccardIndexOf";
 
 const Main = () => {
-  //* States
-
+  //! States
   const [currentEntityType, setCurrentEntityType] = useState(null);
   const [currentEntityQid, setCurrentEntityQid] = useState(null);
   const [currentEntityName, setCurrentEntityName] = useState(null);
@@ -27,6 +26,9 @@ const Main = () => {
   const [searchbarText, setSearchbarText] = useState("");
   const [selectedEntityType, setSelectedEntityType] = useState("");
   const [initialNodeAmount, setInitialNodeAmount] = useState(50);
+  // Go Back Function
+  const [lastNodes, setLastNodes] = useState([]);
+  const [canGoBack, setCanGoBack] = useState(false);
   const [nodes, setNodes] = useState({
     nodes: [],
     links: [],
@@ -54,8 +56,32 @@ const Main = () => {
     currentEntityQid,
     currentEntityName
   );
+  useEffect(() => {
+    console.clear();
+    console.log("lastNodes");
+    console.log(lastNodes);
+    console.log("nodes");
+    console.log(nodes);
+    console.log("clickedNode");
+    console.log(clickedNode);
+  }, [lastNodes, nodes, clickedNode]);
 
   //! Handler Functions:
+  const handleBackButton = () => {
+    if (lastNodes) {
+      setLastNodes((prevState) =>
+        prevState.filter((elem, i) => i !== prevState.length - 1)
+      );
+      setNodes(lastNodes[lastNodes.length - 1]);
+      setClickedNode(null);
+      if (lastNodes.length <= 1) setCanGoBack(false);
+    }
+  };
+
+  useEffect(() => {
+    setNodes(lastNodes[lastNodes.length - 1]);
+  }, [lastNodes]);
+
   const isEntitySelected = (value) => {
     if (selectedEntityType === value) {
       return true;
@@ -82,6 +108,7 @@ const Main = () => {
   //! Creates initial Nodes and Links
   //! Link creation is considering Jaccard Similarity
   useEffect(() => {
+    setCanGoBack(false);
     if (newsData) {
       const nodes = [];
       const links = [];
@@ -115,7 +142,9 @@ const Main = () => {
           }
         });
       });
-
+      const currentLastNodes = [];
+      currentLastNodes.push({ nodes: nodes, links: links });
+      setLastNodes(currentLastNodes);
       setNodes({ nodes: nodes, links: links });
     }
   }, [newsData, jaccardThreshold]);
@@ -189,6 +218,10 @@ const Main = () => {
         default:
           break;
       }
+      setLastNodes((prevState) => [
+        ...prevState,
+        { nodes: nodes, links: links },
+      ]);
       setNodes(() => setNodes({ nodes: nodes, links: links }));
     }
   }, [entityData]);
@@ -196,9 +229,9 @@ const Main = () => {
   //! useEffect Hook - Dependency (clickedNode)
   //! Switches on clicked Node Type
   useEffect(() => {
-    const links = [];
-    const nodes = [];
     if (clickedNode) {
+      const links = [];
+      const nodes = [];
       switch (clickedNode.__typename) {
         // Click on Entity Node
         case "org":
@@ -210,6 +243,7 @@ const Main = () => {
           break;
         // Click on News Node
         case "News":
+          setCanGoBack(true);
           pushNewsNode(nodes, clickedNode);
 
           clickedNode?.org?.forEach((orgNode) => {
@@ -231,9 +265,13 @@ const Main = () => {
               pushNodes(nodes, locNode, "loc", "lightblue");
               pushLinks(links, clickedNode, locNode);
             }
-
-            setNodes(() => setNodes({ nodes: nodes, links: links }));
           });
+          setLastNodes((prevState) => [
+            ...prevState,
+            { nodes: nodes, links: links },
+          ]);
+          setNodes(() => setNodes({ nodes: nodes, links: links }));
+          break;
       }
     }
   }, [clickedNode]);
@@ -241,6 +279,8 @@ const Main = () => {
   return (
     <div>
       <Search
+        canGoBack={canGoBack}
+        handleBackButton={handleBackButton}
         searchbarText={searchbarText}
         changeSearchbarText={(searchbarText) => setSearchbarText(searchbarText)}
         isEntitySelected={isEntitySelected}
