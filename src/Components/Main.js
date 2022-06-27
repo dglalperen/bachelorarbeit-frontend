@@ -18,13 +18,13 @@ import { getJaccardIndexOf } from "../HelperFunctions/getJaccardIndexOf";
 
 const Main = () => {
   //! States
-  const [searchbarText, setSearchbarText] = useState("");
-  const [selectedEntityType, setSelectedEntityType] = useState("");
   const [currentEntityType, setCurrentEntityType] = useState(null);
   const [currentEntityQid, setCurrentEntityQid] = useState(null);
   const [currentEntityName, setCurrentEntityName] = useState(null);
   const [clickedNode, setClickedNode] = useState(null);
   const [jaccardThreshold, setJaccardThreshold] = useState(0.4);
+  const [searchbarText, setSearchbarText] = useState("");
+  const [selectedEntityType, setSelectedEntityType] = useState("");
   const [initialNodeAmount, setInitialNodeAmount] = useState(50);
   // Go Back Function
   const [lastNodes, setLastNodes] = useState([]);
@@ -57,21 +57,30 @@ const Main = () => {
     currentEntityName
   );
   useEffect(() => {
+    console.clear();
     console.log("lastNodes");
     console.log(lastNodes);
-  }, [lastNodes]);
+    console.log("nodes");
+    console.log(nodes);
+    console.log("clickedNode");
+    console.log(clickedNode);
+  }, [lastNodes, nodes, clickedNode]);
 
   //! Handler Functions:
   const handleBackButton = () => {
     if (lastNodes) {
-      setLastNodes((prev) => {
-        const newLastNodes = [...prev];
-        newLastNodes.pop();
-        return newLastNodes;
-      });
+      setLastNodes((prevState) =>
+        prevState.filter((elem, i) => i !== prevState.length - 1)
+      );
       setNodes(lastNodes[lastNodes.length - 1]);
+      setClickedNode(null);
+      if (lastNodes.length <= 1) setCanGoBack(false);
     }
   };
+
+  useEffect(() => {
+    setNodes(lastNodes[lastNodes.length - 1]);
+  }, [lastNodes]);
 
   const isEntitySelected = (value) => {
     if (selectedEntityType === value) {
@@ -133,7 +142,9 @@ const Main = () => {
           }
         });
       });
-      setLastNodes((current) => [...current, { nodes: nodes, links: links }]);
+      const currentLastNodes = [];
+      currentLastNodes.push({ nodes: nodes, links: links });
+      setLastNodes(currentLastNodes);
       setNodes({ nodes: nodes, links: links });
     }
   }, [newsData, jaccardThreshold]);
@@ -207,7 +218,10 @@ const Main = () => {
         default:
           break;
       }
-      setLastNodes((current) => [...current, { nodes: nodes, links: links }]);
+      setLastNodes((prevState) => [
+        ...prevState,
+        { nodes: nodes, links: links },
+      ]);
       setNodes(() => setNodes({ nodes: nodes, links: links }));
     }
   }, [entityData]);
@@ -252,8 +266,8 @@ const Main = () => {
               pushLinks(links, clickedNode, locNode);
             }
           });
-          setLastNodes((current) => [
-            ...current,
+          setLastNodes((prevState) => [
+            ...prevState,
             { nodes: nodes, links: links },
           ]);
           setNodes(() => setNodes({ nodes: nodes, links: links }));

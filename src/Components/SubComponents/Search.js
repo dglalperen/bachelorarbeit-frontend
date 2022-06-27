@@ -93,7 +93,6 @@ const Search = ({
           <h1
             id="back-btn"
             onClick={() => {
-              console.log("click");
               handleBackButton();
             }}
           >
