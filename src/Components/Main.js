@@ -26,7 +26,6 @@ const Main = () => {
   const [searchbarText, setSearchbarText] = useState("");
   const [selectedEntityType, setSelectedEntityType] = useState("");
   const [initialNodeAmount, setInitialNodeAmount] = useState(50);
-  // Go Back Function
   const [lastNodes, setLastNodes] = useState([]);
   const [canGoBack, setCanGoBack] = useState(false);
   const [nodes, setNodes] = useState({
@@ -50,21 +49,13 @@ const Main = () => {
     data: entityData,
     isLoading: isLoadingEntityData,
     error: errorEntityData,
+    setError: setEror,
   } = useFetchEntity(
     "http://195.37.233.209:4000/graphql",
     currentEntityType,
     currentEntityQid,
     currentEntityName
   );
-  useEffect(() => {
-    console.clear();
-    console.log("lastNodes");
-    console.log(lastNodes);
-    console.log("nodes");
-    console.log(nodes);
-    console.log("clickedNode");
-    console.log(clickedNode);
-  }, [lastNodes, nodes, clickedNode]);
 
   //! Handler Functions:
   const handleBackButton = () => {
@@ -75,6 +66,7 @@ const Main = () => {
       setNodes(lastNodes[lastNodes.length - 1]);
       setClickedNode(null);
       if (lastNodes.length <= 1) setCanGoBack(false);
+      setEror(null);
     }
   };
 

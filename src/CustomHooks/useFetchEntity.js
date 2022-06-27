@@ -30,7 +30,7 @@ const useFetchEntity = (url, entityType, qid, entityName) => {
     }
   }, [url, entityType, qid, entityName]);
 
-  return { data, isLoading, error };
+  return { data, isLoading, error, setError };
 };
 
 export default useFetchEntity;
