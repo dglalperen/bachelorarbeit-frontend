@@ -49,7 +49,7 @@ const Main = () => {
     data: entityData,
     isLoading: isLoadingEntityData,
     error: errorEntityData,
-    setError: setEror,
+    setError: setError,
   } = useFetchEntity(
     "http://195.37.233.209:4000/graphql",
     currentEntityType,
@@ -66,13 +66,9 @@ const Main = () => {
       setNodes(lastNodes[lastNodes.length - 1]);
       setClickedNode(null);
       if (lastNodes.length <= 1) setCanGoBack(false);
-      setEror(null);
+      setError(null);
     }
   };
-
-  useEffect(() => {
-    setNodes(lastNodes[lastNodes.length - 1]);
-  }, [lastNodes]);
 
   const isEntitySelected = (value) => {
     if (selectedEntityType === value) {
@@ -95,6 +91,12 @@ const Main = () => {
   const handleNodeClick = (nodeArr) => {
     setClickedNode(nodeArr[0]);
   };
+
+  //! useEffect Hook - Dependencies (lastNodes)
+  //! sets Nodes to the last element auf lastNodes Stack
+  useEffect(() => {
+    setNodes(lastNodes[lastNodes.length - 1]);
+  }, [lastNodes]);
 
   //! useEffect Hook - Dependencies (newsData & jaccardThreshold)
   //! Creates initial Nodes and Links
@@ -326,8 +328,9 @@ const Main = () => {
           }}
           onNodeClick={(node) => {
             if (node.__typename !== "News") {
-              const arr = [node];
-              handleNodeClick(arr);
+              const nodeAsArr = [node];
+              console.log(node);
+              handleNodeClick(nodeAsArr);
             } else
               handleNodeClick(newsData.filter((news) => news.id === node.id));
           }}

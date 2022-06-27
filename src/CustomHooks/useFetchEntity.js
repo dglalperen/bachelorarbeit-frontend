@@ -10,8 +10,7 @@ const useFetchEntity = (url, entityType, qid, entityName) => {
 
   useEffect(() => {
     setIsLoading(true);
-    if (!entityType && !qid) {
-    } else {
+    if (entityType && qid) {
       fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
