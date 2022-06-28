@@ -329,7 +329,6 @@ const Main = () => {
           onNodeClick={(node) => {
             if (node.__typename !== "News") {
               const nodeAsArr = [node];
-              console.log(node);
               handleNodeClick(nodeAsArr);
             } else
               handleNodeClick(newsData.filter((news) => news.id === node.id));
