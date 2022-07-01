@@ -1,6 +1,41 @@
-# Getting Started with Create React App
+# Bachelorarbeit Project
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
+
+This Project visualizes knowledge data into a knowledge graph
+Initially one will see 50 Nodes.
+
+## Types of Nodes
+
+yellow --> news nodes
+blue --> location nodes
+red --> person nodes
+green --> organisation nodes
+
+# Links
+
+Links will be set by a jaccard threshold which computes the jaccard similarity between two nodes.
+The jaccard similarity concentrates on the child nodes of the news nodes. These are the above listed ones.
+
+## Navigating through the knowledge graph
+
+By clicking on a node, it will display the clicked node and show the proper child nodes. You can further click on
+the child nodes to display their child nodes, making the clicked you the parent and central node.
+If you want to go back you layer, you can click on the back button which displays after reaching a minimal node layer of you.
+
+# Error Handling
+
+Sometimes clicking on a node will make a unsuccessfull fetch regarding the node data. In this case you will see a error description
+which displays in the lower header section.
+
+# Searching for news nodes / specific entities
+
+You can search up you for entities using the search bar in the header section. When making a search, you have to click on of the radio
+buttons to match the entity typing.
+
+\*\*Example: "Elon Musk" --> Type Person
+
+Furthermore, you can decide how many nodes there should be displayed. Therefore you can type a new node amount in the "Node Amount" input field.
 
 ## Available Scripts
 
@@ -38,33 +73,3 @@ If you aren't satisfied with the build tool and configuration choices, you can `
 Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
 You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
